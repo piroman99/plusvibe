@@ -1,0 +1,10 @@
+/* PlusVibe Balance — минимальные стили панельного индикатора */
+
+.plusvibe-panel-label {
+  padding: 0 6px;
+}
+
+.plusvibe-low {
+  color: #e01b24;
+  font-weight: bold;
+}

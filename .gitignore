@@ -1,0 +1,13 @@
+# локальный ключ и рабочие файлы — не коммитим
+key.txt
+gnome-widget/key.txt
+.env
+status.txt
+
+# сборки расширения
+*.shell-extension.zip
+*.zip
+
+# служебное
+*.pyc
+__pycache__/

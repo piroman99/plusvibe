@@ -1,0 +1,7 @@
+{
+  "uuid": "plusvibe@ivan.local",
+  "name": "PlusVibe Balance",
+  "description": "Показывает остаток и расход PlusVibe API в верхней панели GNOME.",
+  "shell-version": ["45", "46", "47", "48", "49", "50"],
+  "version": 1
+}
