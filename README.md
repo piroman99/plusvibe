@@ -1,5 +1,11 @@
 # PlusVibe Balance
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![Python](https://img.shields.io/badge/python-3.10%2B-3776AB.svg)
+![Dependencies](https://img.shields.io/badge/dependencies-stdlib%20only-brightgreen.svg)
+![GNOME Shell](https://img.shields.io/badge/GNOME%20Shell-45%E2%80%9350-4A86CF.svg)
+![Platform](https://img.shields.io/badge/platform-Linux-lightgrey.svg)
+
 Два способа смотреть остаток и расход PlusVibe API:
 
 - `pv.py` — консольная сводка (баланс, расход за сегодня и за месяц, число запросов);
