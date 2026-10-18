@@ -24,6 +24,7 @@ import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
 const BASE_URL = 'https://plusvibeapi.ru';
+const DASHBOARD_URL = 'https://plusvibeapi.ru/dashboard/';
 const REFRESH_SECONDS = 600; // обновление раз в 10 минут
 const LOW_THRESHOLD = 100.0; // ₽ — ниже этого остаток подсвечивается
 
@@ -114,6 +115,14 @@ function findValue(obj, needle) {
   return undefined;
 }
 
+function openDashboard() {
+  try {
+    Gio.AppInfo.launch_default_for_uri(DASHBOARD_URL, null);
+  } catch (e) {
+    Main.notifyError('PlusVibe', `Не удалось открыть ${DASHBOARD_URL}: ${e.message || e}`);
+  }
+}
+
 function fmtRub(v) {
   const n = Number(v);
   if (!isFinite(n))
@@ -145,12 +154,16 @@ class PlusVibeIndicator extends PanelMenu.Button {
 
     this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
-    this.menu.addMenuItem(new PopupMenu.PopupMenuItem(
-      'Ключ: ~/.config/plusvibe/key.txt', {reactive: false}));
+    this._dashboardItem = new PopupMenu.PopupMenuItem('Открыть личный кабинет');
+    this._dashboardItem.connect('activate', () => openDashboard());
+    this.menu.addMenuItem(this._dashboardItem);
 
     this._refreshItem = new PopupMenu.PopupMenuItem('Обновить');
     this._refreshItem.connect('activate', () => this._refresh());
     this.menu.addMenuItem(this._refreshItem);
+
+    this.menu.addMenuItem(new PopupMenu.PopupMenuItem(
+      'Ключ: ~/.config/plusvibe/key.txt', {reactive: false}));
 
     this._refresh();
     this._timerId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT,
