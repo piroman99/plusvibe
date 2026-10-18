@@ -26,7 +26,20 @@ if [ ! -f "$CONFIG_DIR/key.txt" ]; then
     printf '# Вставьте ключ PlusVibe (sk-pv-...) одной строкой\n' > "$CONFIG_DIR/key.txt"
 fi
 
-gnome-extensions enable "$UUID" 2>/dev/null || true
+# --- включение: НЕ глотаем ошибку -----------------------------------------
+ENABLE_OUT="$(gnome-extensions enable "$UUID" 2>&1)"
+ENABLE_RC=$?
+if [ -n "$ENABLE_OUT" ]; then
+  echo "gnome-extensions enable: $ENABLE_OUT" >&2
+fi
+if [ $ENABLE_RC -ne 0 ]; then
+  echo "enable вернул $ENABLE_RC — пробую через gsettings" >&2
+fi
+
+# дублируем через gsettings (не затирая другие расширения)
+if [ -f "$DIR/pv_enable.py" ]; then
+  python3 "$DIR/pv_enable.py" "$UUID" 2>&1 | sed 's/^/  /' || true
+fi
 
 # --- проверка результата (без вранья) -------------------------------------
 EXT_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/gnome-shell/extensions/$UUID"
@@ -43,6 +56,10 @@ if printf '%s' "$INFO" | grep -qiE 'не найдено|not found|not installed'
 else
   echo "Shell видит расширение:"
   printf '%s\n' "$INFO" | sed 's/^/  /'
+  if printf '%s' "$INFO" | grep -qiE 'Включено: (Нет|No)|State: (INITIALIZED|DISABLED)'; then
+    echo "ВНИМАНИЕ: расширение установлено, но НЕ включено — индикатора не будет." >&2
+    echo "  запусти: bash \"$DIR/fix.sh\"  (или bash \"$DIR/diag.sh\" для отчёта)" >&2
+  fi
 fi
 
 cat <<EOF
@@ -55,4 +72,6 @@ cat <<EOF
 
 Ключ впишите в: $CONFIG_DIR/key.txt
 (либо в key.txt рядом с extension.js)
+
+Диагностика: bash "$DIR/diag.sh"   Включение с показом ошибок: bash "$DIR/fix.sh"
 EOF
